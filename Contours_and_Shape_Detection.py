@@ -14,16 +14,22 @@ def getContours(img):
         print(len(approx))
         obj = len(approx)
         x,y,w,h = cv2.boundingRect(approx)
-        if obj == 3: objectType = "Tri"
+        if obj == 3:
+            objectType = "Tri"
         elif obj == 4:
             x = w/float(h)
-            if 0.95 < x < 1.05: objectType = "Square"
-            else: objectType = "Rectangle"
-        else: objectType = "None"
+            if x > 0.95 and x < 1.05:
+                objectType = "Square"
+            else:
+                objectType = "Rectangle"
+        elif obj > 4:
+            objectType = "Circle"
+        else:
+            objectType = "None"
 
 
         cv2.rectangle(imgContours,(x,y),(x+w,y+h),(255,0,0),2)
-        cv2.putText(imgContours,objectType,(x+(w//2)-10,y+(w//2)+10),cv2.FONT_HERSHEY_COMPLEX,0.5,(0,0,0),1)
+        cv2.putText(imgContours,objectType,(x+(w//2)-10,y+(h//2)+10),cv2.FONT_HERSHEY_COMPLEX,0.5,(0,0,0),1)
 
 path = "Resources/shape.jpg"
 img = cv2.imread(path)
