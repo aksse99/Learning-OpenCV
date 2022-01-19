@@ -7,7 +7,7 @@ heightImg = 480
 cap = cv2.VideoCapture(0)
 cap.set(3,widthImg)
 cap.set(4,heightImg)
-cap.set(10,150)
+cap.set(10,100)
 
 
 def preProcessing(img):
@@ -28,7 +28,7 @@ def getContours(img):
     for cnt in contours:
         area = cv2.contourArea(cnt)
         if area>5000:
-            #cv2.drawContours(imgContours,cnt,-1,(0,255,0),2)
+            cv2.drawContours(imgContours,cnt,-1,(0,255,0),2)
             perim = cv2.arcLength(cnt,True)
             approx = cv2.approxPolyDP(cnt, 0.02*perim, True)
             if area > maxArea and len(approx) == 4:
@@ -38,23 +38,27 @@ def getContours(img):
         return biggest
 
 def reorder(myPoints):
-    myPoints = myPoints.reshape((4,2))
-    myPointsNew = np.zeros((4,1,2), np.int32)
-    add = myPoints.sum(axis=1)
-    print ("add",add)
+    #myPoints = myPoints.reshape((4,2))
+    #myPointsNew = np.zeros((4,1,2), np.int32)
+    #add = myPoints.sum(axis=1)
+    #print ("add",add)
+
+    #myPointsNew[0] = myPoints[np.argmin(add)]
+    #myPointsNew[3] = myPoints[np.argmax(add)]
+    #print("New Points",myPointsNew)
+    pass
 
 
+#def getWarp(img, biggest):
 
-def getWarp(img, biggest):
+    #reorder(biggest)
+    #print(biggest)
+    #pts1 = np.float32(biggest)
+   # pts2 = np.float32([[0,0],[widthImg,0],[0,heightImg],[widthImg,heightImg]])
+    #matrix = cv2.getPerspectiveTransform(pts1, pts2,)
+    #imgOutput = cv2.warpPerspective(img, matrix,(widthImg,heightImg))
 
-    reorder(biggest)
-    print(biggest)
-    pts1 = np.float32(biggest)
-    pts2 = np.float32([[0,0],[widthImg,0],[0,heightImg],[widthImg,heightImg]])
-    matrix = cv2.getPerspectiveTransform(pts1, pts2,)
-    imgOutput = cv2.warpPerspective(img, matrix,(widthImg,heightImg))
-
-    return imgOutput
+    #return imgOutput
 
 
 while True:
@@ -64,11 +68,11 @@ while True:
 
 
     imgThres = preProcessing(img)
-    biggest = getContours(imgThres)
+    getContours(imgThres)
     #print(biggest)
 
-    imgWarped = getWarp(img, biggest)
+    #imgWarped = getWarp(img, biggest)
 
-    cv2.imshow("Result",imgWarped)
+    cv2.imshow("Result",imgContours)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
